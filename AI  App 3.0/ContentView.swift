@@ -1,61 +1,62 @@
-//
-//  ContentView.swift
-//  AI  App 3.0
-//
-//  Created by Isa Muniz on 6/4/25.
-//
-
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @State private var chats: [String] = ["Chat 1", "Chat 2"]
+    @State private var showingSettings = false
+    @EnvironmentObject var themeManager: ThemeManager
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+        NavigationView {
+            VStack {
+                List {
+                    ForEach(chats, id: \.self) { chat in
+                        NavigationLink(destination: AIChatView(chatTitle: chat)) {
+                            Text(chat)
+                                .themedText(themeManager.currentTheme)
+                                .padding(.vertical, 4)
+                        }
+                        .listRowBackground(themeManager.currentTheme.surfaceColor)
                     }
                 }
-                .onDelete(perform: deleteItems)
+                .listStyle(PlainListStyle())
+                .themedBackground(themeManager.currentTheme)
+                .scrollContentBackground(.hidden)
+
+                Button(action: {
+                    createNewChat()
+                }) {
+                    Text("New Chat")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .themedPrimary(themeManager.currentTheme)
+                        .cornerRadius(10)
+                        .padding(.horizontal)
+                }
             }
+            .themedBackground(themeManager.currentTheme)
+                        .navigationTitle("RAFI AI")
+                        .navigationBarTitleDisplayMode(.large)
+                        .toolbarColorScheme(.dark) // This forces white text
+                        .toolbarBackground(themeManager.currentTheme.backgroundColor, for: .navigationBar)
+                        .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                    Button(action: {
+                        showingSettings = true
+                    }) {
+                        Image(systemName: "gear")
+                            .foregroundColor(themeManager.currentTheme.accentColor)
                     }
                 }
             }
-        } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+            .sheet(isPresented: $showingSettings) {
+                SettingsView()
+                    .environmentObject(themeManager)
             }
         }
     }
-}
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+    private func createNewChat() {
+        chats.append("New Chat \(chats.count + 1)")
+    }
 }

@@ -12,13 +12,22 @@ struct SplashView: View {
             themeManager.currentTheme.backgroundColor
                 .ignoresSafeArea()
             
-            // Logo with animations
-            Image("Robotic (1)")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 200, height: 200)
-                .opacity(logoOpacity)
-                .scaleEffect(logoScale)
+            VStack(spacing: 20) {
+                // Logo with animations
+                Image("rafi-logo") // Update this to match your exact asset name
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
+                    .opacity(logoOpacity)
+                    .scaleEffect(logoScale)
+                    .background(Color.red.opacity(0.3)) // Temporary: shows logo boundaries
+                
+                // Temporary: Debug text to see if theme is working
+                Text("RAFI AI")
+                    .font(.title)
+                    .foregroundColor(themeManager.currentTheme.textColor)
+                    .opacity(logoOpacity)
+            }
         }
         .onAppear {
             startAnimation()

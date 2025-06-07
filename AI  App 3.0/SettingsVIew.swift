@@ -68,7 +68,7 @@ struct SettingsView: View {
                             .padding(.horizontal)
                         
                         VStack(spacing: 8) {
-                            InfoRow(title: "Version", value: "1.0")
+                            InfoRow(title: "Version", value: "1.0.3")
                             InfoRow(title: "Developer", value: "Israel Muñiz")
                             InfoRow(title: "Purpose", value: "Assisting students with learning disabilities")
                         }
@@ -81,8 +81,12 @@ struct SettingsView: View {
                 }
             }
             .themedBackground(themeManager.currentTheme)
-            .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
+                        .navigationTitle("Settings")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbarColorScheme(.dark) // This forces white text
+                        .toolbarBackground(themeManager.currentTheme.backgroundColor, for: .navigationBar)
+                        .toolbarBackground(.visible, for: .navigationBar)
+         
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
