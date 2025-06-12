@@ -1,27 +1,39 @@
-//
-//  AIChatView.swift
-//  AI  App 3.0
-//
-//  Created by Isa Muniz on 6/4/25.
-//
-
 import SwiftUI
+import CoreData
 
 struct AIChatView: View {
-    let chatTitle: String
-    @State private var messages: [ChatMessage] = [
-        ChatMessage(content: "Welcome to the RAFI AI Chat!", isUser: false)
-    ]
+    let chat: Chat
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest private var messages: FetchedResults<Message>
     @State private var userInput: String = ""
     @EnvironmentObject var themeManager: ThemeManager
+    
+    // Initialize with specific chat's messages
+    init(chat: Chat) {
+        self.chat = chat
+        self._messages = FetchRequest(
+            sortDescriptors: [NSSortDescriptor(keyPath: \Message.timestamp, ascending: true)],
+            predicate: NSPredicate(format: "chat == %@", chat),
+            animation: .default
+        )
+    }
     
     var body: some View {
         VStack(spacing: 0) {
             // Display chat messages
             ScrollView {
                 LazyVStack(spacing: 12) {
-                    ForEach(messages) { message in
-                        MessageBubble(message: message)
+                    // Welcome message if no messages
+                    if messages.isEmpty {
+                        MessageBubble(content: "Welcome to the RAFI AI Chat!", isUser: false, timestamp: Date())
+                    }
+                    
+                    ForEach(messages, id: \.self) { message in
+                        MessageBubble(
+                            content: message.content ?? "",
+                            isUser: message.isUser,
+                            timestamp: message.timestamp ?? Date()
+                        )
                     }
                 }
                 .padding()
@@ -49,24 +61,45 @@ struct AIChatView: View {
             .themedSurface(themeManager.currentTheme)
         }
         .themedBackground(themeManager.currentTheme)
-        .navigationTitle(chatTitle)
+        .navigationTitle(chat.name ?? "Chat")
         .navigationBarTitleDisplayMode(.inline)
     }
     
     private func sendMessage() {
         guard !userInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         
-        let userMessage = ChatMessage(content: userInput, isUser: true)
-        messages.append(userMessage)
+        // Save user message to Core Data
+        let userMessage = Message(context: viewContext)
+        userMessage.content = userInput
+        userMessage.isUser = true
+        userMessage.timestamp = Date()
+        userMessage.chat = chat
         
         let messageContent = userInput
         userInput = ""
         
+        // Save to Core Data
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error saving user message: \(error)")
+        }
+        
         // Call the AI API
         callAIAPI(message: messageContent) { response in
             DispatchQueue.main.async {
-                let aiMessage = ChatMessage(content: response, isUser: false)
-                messages.append(aiMessage)
+                // Save AI response to Core Data
+                let aiMessage = Message(context: viewContext)
+                aiMessage.content = response
+                aiMessage.isUser = false
+                aiMessage.timestamp = Date()
+                aiMessage.chat = chat
+                
+                do {
+                    try viewContext.save()
+                } catch {
+                    print("Error saving AI message: \(error)")
+                }
             }
         }
     }
@@ -137,44 +170,39 @@ struct AIChatView: View {
     }
 }
 
-// MARK: - Supporting Models and Views
-struct ChatMessage: Identifiable {
-    let id = UUID()
+// MARK: - Updated MessageBubble
+struct MessageBubble: View {
     let content: String
     let isUser: Bool
-    let timestamp = Date()
-}
-
-struct MessageBubble: View {
-    let message: ChatMessage
+    let timestamp: Date
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
         HStack {
-            if message.isUser {
+            if isUser {
                 Spacer()
             }
             
-            VStack(alignment: message.isUser ? .trailing : .leading, spacing: 4) {
-                Text(message.content)
+            VStack(alignment: isUser ? .trailing : .leading, spacing: 4) {
+                Text(content)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
                     .background(
-                        message.isUser ?
+                        isUser ?
                         themeManager.currentTheme.primaryColor :
                         themeManager.currentTheme.surfaceColor
                     )
                     .foregroundColor(themeManager.currentTheme.textColor)
                     .cornerRadius(20)
-                    .frame(maxWidth: UIScreen.main.bounds.width * 0.75, alignment: message.isUser ? .trailing : .leading)
+                    .frame(maxWidth: UIScreen.main.bounds.width * 0.75, alignment: isUser ? .trailing : .leading)
                 
-                Text(formatTime(message.timestamp))
+                Text(formatTime(timestamp))
                     .font(.caption2)
                     .foregroundColor(themeManager.currentTheme.textColor.opacity(0.6))
                     .padding(.horizontal, 4)
             }
             
-            if !message.isUser {
+            if !isUser {
                 Spacer()
             }
         }
