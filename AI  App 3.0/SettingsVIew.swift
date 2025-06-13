@@ -1,15 +1,10 @@
-//
-//  SettingsVIew.swift
-//  AI  App 3.0
-//
-//  Created by Isa Muniz on 6/4/25.
-//
-
 import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var authManager: AuthenticationManager
     @Environment(\.presentationMode) var presentationMode
+    @State private var showingSignOutAlert = false
     
     var body: some View {
         NavigationView {
@@ -60,6 +55,38 @@ struct SettingsView: View {
                         .padding(.horizontal)
                     }
                     
+                    // User Account Section
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Account")
+                            .font(.headline)
+                            .themedText(themeManager.currentTheme)
+                            .padding(.horizontal)
+                        
+                        VStack(spacing: 8) {
+                            if let user = authManager.currentUser {
+                                InfoRow(title: "Name", value: user.name)
+                                InfoRow(title: "Email", value: user.email)
+                            }
+                            
+                            // Sign Out Button
+                            Button(action: {
+                                showingSignOutAlert = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    Text("Sign Out")
+                                    Spacer()
+                                }
+                                .foregroundColor(.red)
+                                .padding(.horizontal)
+                                .padding(.vertical, 12)
+                            }
+                        }
+                        .themedSurface(themeManager.currentTheme)
+                        .padding(.horizontal)
+                    }
+                    .padding(.top, 20)
+                    
                     // About Section
                     VStack(alignment: .leading, spacing: 10) {
                         Text("About RAFI AI")
@@ -81,12 +108,11 @@ struct SettingsView: View {
                 }
             }
             .themedBackground(themeManager.currentTheme)
-                        .navigationTitle("Settings")
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbarColorScheme(.dark) // This forces white text
-                        .toolbarBackground(themeManager.currentTheme.backgroundColor, for: .navigationBar)
-                        .toolbarBackground(.visible, for: .navigationBar)
-         
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark)
+            .toolbarBackground(themeManager.currentTheme.backgroundColor, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
@@ -94,6 +120,15 @@ struct SettingsView: View {
                     }
                     .foregroundColor(themeManager.currentTheme.accentColor)
                 }
+            }
+            .alert("Sign Out", isPresented: $showingSignOutAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Sign Out", role: .destructive) {
+                    authManager.signOut()
+                    presentationMode.wrappedValue.dismiss()
+                }
+            } message: {
+                Text("Are you sure you want to sign out?")
             }
         }
     }
@@ -168,4 +203,5 @@ struct InfoRow: View {
 #Preview {
     SettingsView()
         .environmentObject(ThemeManager())
+        .environmentObject(AuthenticationManager())
 }

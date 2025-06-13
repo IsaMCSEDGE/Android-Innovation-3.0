@@ -11,11 +11,23 @@ import SwiftData
 @main
 struct AI__App_3_0App: App {
     @StateObject private var themeManager = ThemeManager()
-        
-        var body: some Scene {
-            WindowGroup {
-                ContentView()
-                    .environmentObject(themeManager)
+    @StateObject private var authManager = AuthenticationManager()
+    
+    var body: some Scene {
+        WindowGroup {
+            Group {
+                if authManager.isSignedIn {
+                    // User is logged in - show main app
+                    ContentView()
+                        .environmentObject(themeManager)
+                        .environmentObject(authManager)
+                } else {
+                    // User not logged in - show login
+                    LoginView()
+                        .environmentObject(themeManager)
+                        .environmentObject(authManager)
+                }
             }
         }
     }
+}
