@@ -87,6 +87,7 @@ struct SettingsView: View {
                     }
                     .padding(.top, 20)
                     
+                    
                     // About Section
                     VStack(alignment: .leading, spacing: 10) {
                         Text("About RAFI AI")
@@ -125,7 +126,13 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) { }
                 Button("Sign Out", role: .destructive) {
                     authManager.signOut()
+                    // Force dismiss all modals and sheets
                     presentationMode.wrappedValue.dismiss()
+                    
+                    // Additional force refresh - post notification
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        NotificationCenter.default.post(name: NSNotification.Name("ForceLogout"), object: nil)
+                    }
                 }
             } message: {
                 Text("Are you sure you want to sign out?")
@@ -199,6 +206,7 @@ struct InfoRow: View {
         .padding(.vertical, 8)
     }
 }
+
 
 #Preview {
     SettingsView()

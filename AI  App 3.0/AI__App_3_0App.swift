@@ -10,7 +10,10 @@ import SwiftData
 
 @main
 struct AI__App_3_0App: App {
+    // Create ONE ThemeManager for the entire app
     @StateObject private var themeManager = ThemeManager()
+    
+    // Create ONE AuthenticationManager for the entire app
     @StateObject private var authManager = AuthenticationManager()
     
     var body: some Scene {
@@ -20,14 +23,15 @@ struct AI__App_3_0App: App {
                     // User is logged in - show main app
                     ContentView()
                         .environmentObject(themeManager)
-                        .environmentObject(authManager)
+                        .environmentObject(authManager) // Pass the SAME authManager
                 } else {
                     // User not logged in - show login
                     LoginView()
                         .environmentObject(themeManager)
-                        .environmentObject(authManager)
+                        .environmentObject(authManager) // Pass the SAME authManager
                 }
             }
         }
     }
+    
 }

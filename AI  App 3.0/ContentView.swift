@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var chats: [String] = ["Chat 1", "Chat 2"]
+    @State private var chats: [String] = ["New Chat!"]
     @State private var showingSettings = false
     @EnvironmentObject var themeManager: ThemeManager
 
