@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - Theme Protocol
+// NEW- Theme Protocol
 protocol Theme {
     var name: String { get }
     var primaryColor: Color { get }
@@ -11,7 +11,7 @@ protocol Theme {
     var accentColor: Color { get }
 }
 
-// MARK: - Theme Implementations
+// NEW - Theme Implementations
 struct StarlightTheme: Theme {
     let name = "Starlight"
     let primaryColor = Color(red: 0.2, green: 0.1, blue: 0.4) // Deep purple
@@ -72,7 +72,7 @@ struct LavenderTheme: Theme {
     let accentColor = Color(red: 0.9, green: 0.8, blue: 1.0) // Light lavender
 }
 
-// MARK: - Calming/Study-Friendly Themes
+//Calming/Study-Friendly Themes
 struct MidnightTheme: Theme {
     let name = "Midnight"
     let primaryColor = Color(red: 0.1, green: 0.2, blue: 0.4) // Deep navy
@@ -103,7 +103,7 @@ struct ArcticTheme: Theme {
     let accentColor = Color(red: 0.8, green: 0.9, blue: 1.0) // Ice white
 }
 
-// MARK: - Vibrant/Energizing Themes
+// Vibrant/Energizing Themes
 struct NeonTheme: Theme {
     let name = "Neon"
     let primaryColor = Color(red: 1.0, green: 0.0, blue: 0.5) // Hot pink
@@ -134,7 +134,7 @@ struct GalaxyTheme: Theme {
     let accentColor = Color(red: 1.0, green: 0.4, blue: 0.8) // Bright pink
 }
 
-// MARK: - Accessible/High-Contrast Themes
+// Accessible/High-Contrast Themes
 struct ClassicTheme: Theme {
     let name = "Classic"
     let primaryColor = Color.black
@@ -155,7 +155,7 @@ struct AmberTheme: Theme {
     let accentColor = Color(red: 1.0, green: 0.8, blue: 0.0) // Golden
 }
 
-// MARK: - Seasonal Themes
+//  Seasonal Themes
 struct AutumnTheme: Theme {
     let name = "Autumn"
     let primaryColor = Color(red: 0.8, green: 0.4, blue: 0.1) // Burnt orange
@@ -176,7 +176,7 @@ struct WinterTheme: Theme {
     let accentColor = Color(red: 0.8, green: 0.9, blue: 1.0) // Snow white
 }
 
-// MARK: - Theme Manager
+// NEW - Theme Manager
 class ThemeManager: ObservableObject {
     @Published var currentTheme: Theme
     
