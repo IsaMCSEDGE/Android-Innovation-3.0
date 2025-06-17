@@ -24,7 +24,7 @@ extension Chat {
     @NSManaged public var messages: NSSet?
 }
 
-// MARK: Generated accessors for messages
+//Accessors for messages
 extension Chat {
     @objc(addMessagesObject:)
     @NSManaged public func addToMessages(_ value: Message)

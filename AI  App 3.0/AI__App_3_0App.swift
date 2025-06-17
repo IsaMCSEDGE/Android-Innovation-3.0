@@ -23,12 +23,12 @@ struct AI__App_3_0App: App {
                     // User is logged in - show main app
                     ContentView()
                         .environmentObject(themeManager)
-                        .environmentObject(authManager) // Pass the SAME authManager
+                        .environmentObject(authManager) 
                 } else {
                     // User not logged in - show login
                     LoginView()
                         .environmentObject(themeManager)
-                        .environmentObject(authManager) // Pass the SAME authManager
+                        .environmentObject(authManager) // Passing the same as the authManager
                 }
             }
         }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-// NEW- Theme Protocol
+// Theme Protocol, which allows for news syntax to be created that you can use.
 protocol Theme {
     var name: String { get }
     var primaryColor: Color { get }
@@ -11,7 +11,7 @@ protocol Theme {
     var accentColor: Color { get }
 }
 
-// NEW - Theme Implementations
+// Theme Implementations
 struct StarlightTheme: Theme {
     let name = "Starlight"
     let primaryColor = Color(red: 0.2, green: 0.1, blue: 0.4) // Deep purple

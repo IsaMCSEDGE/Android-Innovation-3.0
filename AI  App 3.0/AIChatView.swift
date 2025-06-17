@@ -9,10 +9,12 @@ import SwiftUI
 
 struct AIChatView: View {
     let chatTitle: String
+    // A brief welcome message
     @State private var messages: [ChatMessage] = [
         ChatMessage(content: "Welcome to the RAFI AI Chat!", isUser: false)
     ]
     @State private var userInput: String = ""
+    // borrows the theme manager for the chat view
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
@@ -72,7 +74,7 @@ struct AIChatView: View {
     }
     
     private func callAIAPI(message: String, completion: @escaping (String) -> Void) {
-        // Correct API URL
+        // API key and URL
         let apiUrl = "https://llm.datasaur.ai/api/sandbox/3262/2700/chat/completions"
         let apiKey = "c983501b-a5f1-4cad-bc6a-aa17dfbba48b"
         
@@ -87,7 +89,7 @@ struct AIChatView: View {
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        // Correct body structure
+        // Structure  for the body
         let body: [String: Any] = [
             "messages": [
                 ["role": "user", "content": message]
@@ -101,7 +103,7 @@ struct AIChatView: View {
             return
         }
         
-        // Debugging: Print the request
+        // Debugging the Print request
         print("API URL: \(apiUrl)")
         print("Request Body: \(body)")
         
@@ -117,7 +119,7 @@ struct AIChatView: View {
                 return
             }
             
-            // Debugging: Print the raw response
+            // Print the raw response
             print("Raw Response: \(String(data: data, encoding: .utf8) ?? "Invalid response")")
             
             // Parse the response
@@ -137,7 +139,7 @@ struct AIChatView: View {
     }
 }
 
-// MARK: - Supporting Models and Views
+// Supporting Models and Views
 struct ChatMessage: Identifiable {
     let id = UUID()
     let content: String

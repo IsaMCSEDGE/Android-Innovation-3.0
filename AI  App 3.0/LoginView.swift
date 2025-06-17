@@ -12,7 +12,7 @@ struct LoginView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var authManager: AuthenticationManager
     
-    // NEW: State variables for username/password login
+    // State variables for username/password login
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var isLoading = false
@@ -32,7 +32,7 @@ struct LoginView: View {
             )
             .ignoresSafeArea()
             
-            ScrollView { // NEW: Added ScrollView so keyboard doesn't cover content
+            ScrollView { //  Added ScrollView so keyboard doesn't cover content
                 VStack(spacing: 30) {
                     Spacer(minLength: 50)
                     
@@ -55,7 +55,7 @@ struct LoginView: View {
                         }
                     }
                     
-                    // NEW: Username and Password Section
+                    //  Username and Password Section
                     VStack(spacing: 20) {
                         Text("Sign In")
                             .font(.title2)
@@ -162,7 +162,7 @@ struct LoginView: View {
                         // Demo Login Button
                         Button(action: {
                             authManager.simulateLogin {
-                                // Navigation happens automatically now!
+                                // Navigation happens automatically now
                             }
                         }) {
                             HStack {
@@ -186,6 +186,11 @@ struct LoginView: View {
                         .themedText(themeManager.currentTheme)
                         .opacity(0.6)
                         .padding(.bottom, 30)
+                    Text("This app was brought to you by Israel Muniz")
+                        .font(.caption)
+                        .themedText(themeManager.currentTheme)
+                        .opacity(0.6)
+                        .padding(.bottom, 40)
                 }
             }
         }

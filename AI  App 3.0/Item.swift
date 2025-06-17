@@ -10,6 +10,7 @@ import SwiftData
 
 @Model
 final class Item {
+    // Allows for timestamps and date to be shown in the chat
     var timestamp: Date
     
     init(timestamp: Date) {

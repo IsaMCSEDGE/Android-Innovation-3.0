@@ -2,7 +2,7 @@ import SwiftUI
 import Foundation
 
 struct ContentView: View {
-    // CHANGED: Using a more complex data structure to store chat info
+    // Shows tohe two chats the the users can interact with
     @State private var chats: [ChatItem] = [
         ChatItem(id: UUID(), name: "Welcome Chat", dateCreated: Date()),
         ChatItem(id: UUID(), name: "Study Session", dateCreated: Date().addingTimeInterval(-3600))
@@ -11,7 +11,7 @@ struct ContentView: View {
     @State private var showingSettings = false
     @EnvironmentObject var themeManager: ThemeManager
     
-    // NEW: State variables for editing functionality
+    //Variables for editing functionality
     @State private var editingChatId: UUID? = nil
     @State private var editingText: String = ""
     @State private var showingDeleteAlert = false
@@ -23,7 +23,7 @@ struct ContentView: View {
                 List {
                     ForEach(chats) { chat in
                         if editingChatId == chat.id {
-                            // EDIT MODE: Show text field for renaming
+                            //  Shows text field for renaming
                             HStack {
                                 TextField("Chat name", text: $editingText)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -45,7 +45,7 @@ struct ContentView: View {
                             }
                             .listRowBackground(themeManager.currentTheme.surfaceColor)
                         } else {
-                            // NORMAL MODE: Show chat with navigation
+                            // Show chat with navigation
                             NavigationLink(destination: AIChatView(chatTitle: chat.name)) {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(chat.name)
@@ -60,9 +60,9 @@ struct ContentView: View {
                                 .padding(.vertical, 4)
                             }
                             .listRowBackground(themeManager.currentTheme.surfaceColor)
-                            // NEW: Swipe actions for each chat
+                            //Swipe actions for each chat
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                // Delete action (red)
+                                // Delete action 
                                 Button(role: .destructive) {
                                     chatToDelete = chat
                                     showingDeleteAlert = true
@@ -70,7 +70,7 @@ struct ContentView: View {
                                     Label("Delete", systemImage: "trash")
                                 }
                                 
-                                // Rename action (blue)
+                                // Rename action 
                                 Button {
                                     startEditing(chat: chat)
                                 } label: {
@@ -78,7 +78,7 @@ struct ContentView: View {
                                 }
                                 .tint(themeManager.currentTheme.accentColor)
                             }
-                            // NEW: Context menu for long press (alternative to swipe)
+                            // Long press alternitive to swipe
                             .contextMenu {
                                 Button {
                                     startEditing(chat: chat)
@@ -111,12 +111,14 @@ struct ContentView: View {
                         .padding(.horizontal)
                 }
             }
+            // Borrows theme manager to this file
             .themedBackground(themeManager.currentTheme)
             .navigationTitle("RAFI AI")
             .navigationBarTitleDisplayMode(.large)
             .toolbarColorScheme(.dark)
             .toolbarBackground(themeManager.currentTheme.backgroundColor, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -131,7 +133,7 @@ struct ContentView: View {
                 SettingsView()
                     .environmentObject(themeManager)
             }
-            // NEW: Delete confirmation alert
+            // Delete confirmation alert
             .alert("Delete Chat", isPresented: $showingDeleteAlert) {
                 Button("Cancel", role: .cancel) {
                     chatToDelete = nil
@@ -150,7 +152,7 @@ struct ContentView: View {
         }
     }
 
-    // NEW: Function to create a new chat with a unique name
+    // Function to create a new chat with a unique name
     private func createNewChat() {
         let newChatNumber = chats.count + 1
         let newChat = ChatItem(
@@ -161,13 +163,13 @@ struct ContentView: View {
         chats.insert(newChat, at: 0) // Add to top of list
     }
     
-    // NEW: Function to start editing a chat name
+    // Function to start editing a chat name
     private func startEditing(chat: ChatItem) {
         editingChatId = chat.id
         editingText = chat.name
     }
     
-    // NEW: Function to save the edited name
+    // Function to save the edited name
     private func finishEditing() {
         guard let editingId = editingChatId else { return }
         
@@ -185,18 +187,18 @@ struct ContentView: View {
         editingText = ""
     }
     
-    // NEW: Function to cancel editing
+    // Function to cancel editing
     private func cancelEditing() {
         editingChatId = nil
         editingText = ""
     }
     
-    // NEW: Function to delete a chat
+    //  Function to delete a chat
     private func deleteChat(_ chat: ChatItem) {
         chats.removeAll { $0.id == chat.id }
     }
     
-    // NEW: Function to format the date nicely
+    //  Function to format the date nicely
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         let calendar = Calendar.current
@@ -219,7 +221,7 @@ struct ContentView: View {
     }
 }
 
-// NEW: Data model for chat items
+//  Data model for chat items
 struct ChatItem: Identifiable {
     let id: UUID
     var name: String

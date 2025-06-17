@@ -13,14 +13,14 @@ import CoreData
 public class Message: NSManagedObject {
     
 }
-
+// 
 extension Message {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Message> {
         return NSFetchRequest<Message>(entityName: "Message")
     }
-    
-    @NSManaged public var content: String?
-    @NSManaged public var isUser: Bool
-    @NSManaged public var timestamp: Date?
-    @NSManaged public var chat: Chat?
+    // Confirms that the users and ai messages are separate
+    @NSManaged public var content: String? //Makes sure that its recieving a message.
+    @NSManaged public var isUser: Bool // Checks if it is the user (true) or the ai (false)
+    @NSManaged public var timestamp: Date?// Checks to see what the date is
+    @NSManaged public var chat: Chat? // Checks to see "Is this the right chat?"
 }

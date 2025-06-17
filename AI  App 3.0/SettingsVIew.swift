@@ -36,17 +36,18 @@ struct SettingsView: View {
                             .font(.headline)
                             .themedText(themeManager.currentTheme)
                             .padding(.horizontal)
-                        
+                        // Creates flexible UI so if more themes are added it still fits
                         LazyVGrid(columns: [
                             GridItem(.flexible()),
                             GridItem(.flexible())
                         ], spacing: 15) {
+                            // Checks the available theme and allows for an animation when one is selected
                             ForEach(ThemeManager.availableThemes, id: \.name) { theme in
                                 ThemeCard(
                                     theme: theme,
                                     isSelected: theme.name == themeManager.currentTheme.name
                                 ) {
-                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                    withAnimation(.easeInOut(duration: 0.6)) {
                                         themeManager.setTheme(theme)
                                     }
                                 }
@@ -108,6 +109,7 @@ struct SettingsView: View {
                     Spacer()
                 }
             }
+            // Sets up the theme manager for the settings view
             .themedBackground(themeManager.currentTheme)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
