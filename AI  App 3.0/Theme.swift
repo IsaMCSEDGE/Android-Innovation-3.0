@@ -176,9 +176,11 @@ struct WinterTheme: Theme {
     let accentColor = Color(red: 0.8, green: 0.9, blue: 1.0) // Snow white
 }
 
-// NEW - Theme Manager
+//  Theme Manager, publishing the current theme, and showing the availble themes.
 class ThemeManager: ObservableObject {
     @Published var currentTheme: Theme
+
+    
     
     static let availableThemes: [Theme] = [
         StarlightTheme(),
@@ -219,7 +221,7 @@ class ThemeManager: ObservableObject {
     }
 }
 
-// MARK: - View Extensions
+// View Extensions
 extension View {
     func themedBackground(_ theme: Theme) -> some View {
         self.background(theme.backgroundColor)
